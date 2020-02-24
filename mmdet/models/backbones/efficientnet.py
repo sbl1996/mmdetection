@@ -89,6 +89,8 @@ class EfficientNet(nn.Module):
             features.final_block
         )
 
+        self._freeze_stages()
+
     def init_weights(self, pretrained=None):
         pass
 
@@ -115,10 +117,9 @@ class EfficientNet(nn.Module):
             outs.append(x)
 
         x = F.pad(x, calc_tf_padding(x, self._kernel_sizes[4], self._strides[4]))
-        if 5 in self.forward_levels:
-            x = self.layer5(x)
-            if 5 in self.feature_levels:
-                outs.append(x)
+        x = self.layer5(x)
+        if 5 in self.feature_levels:
+            outs.append(x)
         return tuple(outs)
 
     def _freeze_stages(self):
